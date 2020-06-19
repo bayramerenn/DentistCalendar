@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Styles{
+    <link href='~/lib/packages/core/main.css' rel='stylesheet' />
+    <link href='~/lib/packages/daygrid/main.css' rel='stylesheet' />
+    <link href="~/lib/packages/timegrid/main.css" rel="stylesheet" />
+    <link href="~/lib/packages/list/main.css" rel="stylesheet" />
+    <link href="~/lib/packages/bootstrap/main.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+}
+
+<div class="row">
+    <div class="col-md-2">
+        <div id="otherEvents">
+            <p><strong>Sürüklenebilir Etkinlikler</strong></p>
+            <div class="fc-event">1. Etkinlik</div><br />
+            <div class="fc-event">2. Etkinlik</div><br />
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div id="calendar">
+
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/packages/core/main.js"></script>
+    <script src="~/lib/packages/daygrid/main.js"></script>
+    <script src="~/lib/packages/timegrid/main.js"></script>
+    <script src="~/lib/packages/list/main.js"></script>
+    <script src="~/lib/packages/interaction/main.js"></script>
+    <script src="~/lib/packages/core/locales/tr.js"></script>
+    <script src="~/lib/packages/bootstrap/main.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var dragableEl = document.getElementById('otherEvents');
+
+            var Draggable = FullCalendarInteraction.Draggable;
+
+            new Draggable(dragableEl, {
+                itemSelector : '.fc-event',
+                eventData: function (eventEl) {
+                    return {
+                        title: eventEl.innerText,
+                        duration: '01:30'
+                    };
+                }
+            });
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'bootstrap'],
+                themeSystem: 'bootstrap',
+                locale: "tr",
+                bootstrapFontAwesome: {
+                    dayGridMonth: 'calendar',
+                    listWeek: 'fa-list'
+                },
+                header: {
+                    left: "prev, next ,today ,addEvent",
+                    center: "title",
+                    right: "dayGridMonth, timeGridWeek, timeGridDay, timeGridForFourDay, listWeek"
+                },
+                footer: {
+                    left: 'prevYear',
+                    right: 'nextYear'
+                },
+                //Boyutlandırma
+                contentHeight: 650,
+
+                //İstenin saatten hizalar
+                //scrollTime:'08:00:00'
+
+                minTime: '08:00:00',
+                maxTime: '21:00:00',
+                //Tarih ve saat ayarlama 15 dakika
+                //slotDuration: '00:15:00',
+                //slotLabelInterval: '00:15:00', 
+                slotLabelFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                },
+                //Ay görünümünü 6 haftadan 5 düşürür
+                fixedWeekCount: false,
+
+                //diğer aylardan kalan günleri göstermez
+                showNonCurrentDates: false,
+
+                defaultView: 'timeGridWeek',//default ay görünümü gözükmesini sağlar
+                weekends: true, //haftasonlarını düzenler
+                allDaySlot: false,
+                titleFormat: {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                },
+                titleRangeSeparator: ' / ',
+                columnHeaderFormat: {
+                    //month : 'numeric',
+                    weekday: 'long'
+                    //day : 'numeric'
+                },
+                views: {
+                    timeGridForFourDay: {
+                        type: 'timeGrid',
+                        dayCount: 4,
+                        buttonText: '4 gün'
+                    }
+                },
+                customButtons: {
+                    addEvent: {
+                        text: 'Ekle',
+                        click: function () {
+                            var newEvent = {
+                                id : 'a',
+                                title: 'New Event',
+                                start: '2020-06-19T15:00:00.000Z',
+                                end: '2020-06-19T15:30:00.000Z'
+                            }
+                            calendar.addEvent(newEvent);
+                        }
+                    }
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute : '2-digit'
+                },
+                timeZone: 'UTC',
+                events: [
+                    {
+                        id: 'x',
+                        title: 'Merhaba',
+                        start : '2020-06-19T08:00:00.000Z',
+                        end : '2020-06-19T10:00:00.000Z'
+                    },
+                    {
+                        id: 'y',
+                        title: 'Merhaba y',
+                        start: '2020-06-19T12:00:00.000Z',
+                        end: '2020-06-19T13:00:00.000Z'
+                    }],
+                droppable : true,
+                selectable: true,
+                select: function (selectionInfo) {
+                    console.log(selectionInfo);
+                },
+                //eventClick: function (info) {
+                //    alert(info.event.title);
+                //},
+                //eventMouseEnter: function (onMouse) {
+                //    alert(onMouse.event.start);
+                //},
+                editable: true,
+                dragRevertDuration: 1500,
+                snapDuration: '00:15:00',
+                eventOverlap: function (stillEvent, movingEvent) {
+                    //süzgeç
+                    return stillEvent.allDay && movingEvent.allDay
+                }
+
+            });
+
+            calendar.render();
+        });
+
+    </script>
+}
